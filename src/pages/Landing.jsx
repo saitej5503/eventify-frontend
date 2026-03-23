@@ -4,7 +4,7 @@ const Landing = () => {
 
   const navigate = useNavigate();
   const text = "Find events you'll love 🎉";
-const [displayText, setDisplayText] = useState("");
+const [, setDisplayText] = useState("");
 
 useEffect(() => {
   let i = 0;
