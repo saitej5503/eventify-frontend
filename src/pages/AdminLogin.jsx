@@ -22,7 +22,7 @@ export default function AdminLogin() {
 
       if (res.ok) {
         setMessage("success");
-        localStorage.setItem("adminToken", data.token);
+        localStorage.setItem("admin", JSON.stringify(data.admin));
 
         // better navigation (no reload)
         navigate("/admin/dashboard");
