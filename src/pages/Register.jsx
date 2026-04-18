@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";   // ✅ ADD THIS
 import API from "../services/api";
 
 const Register = () => {
+
+  const navigate = useNavigate();   // ✅ ADD THIS
 
   const [form, setForm] = useState({
     name: "",
@@ -10,14 +13,14 @@ const Register = () => {
     interests: "",
     department: "",
     year: ""
-
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await API.post("/users/register", {
+      // 1️⃣ Register user
+      await API.post("/users/register", {
         name: form.name,
         email: form.email,
         password: form.password,
@@ -26,19 +29,21 @@ const Register = () => {
         year: form.year || "ALL"
       });
 
-      console.log(res.data);
-
-      alert("User registered successfully");
-
-      // clear form
-      setForm({
-        name: "",
-        email: "",
-        password: "",
-        interests: "",
-        department: "",
-        year: ""
+      // 2️⃣ Auto login
+      const loginRes = await API.post("/users/login", {
+        email: form.email,
+        password: form.password
       });
+
+      console.log("Login Response:", loginRes.data);
+
+      // 3️⃣ Save user in localStorage
+      localStorage.setItem("user", JSON.stringify(loginRes.data.user));
+
+      alert("Registration successful! Logged in automatically 🚀");
+
+      // 4️⃣ Redirect to events page
+      navigate("/events");
 
     } catch (error) {
       console.error("Registration error:", error.response?.data || error.message);
@@ -107,7 +112,6 @@ const Register = () => {
             onChange={(e)=>setForm({...form,year:e.target.value})}
             className="w-full p-3 rounded-xl bg-white/10 border border-white/20 outline-none focus:ring-2 focus:ring-purple-500"
           />
-
 
           <button
             className="w-full bg-purple-600 hover:bg-purple-700 py-3 rounded-xl font-semibold transition duration-300"
